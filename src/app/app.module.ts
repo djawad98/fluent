@@ -12,6 +12,7 @@ import { LocalDatePipe } from './common/pipes/local-date.pipe'
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { InputMaskModule } from '@ngneat/input-mask';
 import { HttpClientModule } from '@angular/common/http';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { HttpClientModule } from '@angular/common/http';
     NzCheckboxModule,
     NzInputModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    NzIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]

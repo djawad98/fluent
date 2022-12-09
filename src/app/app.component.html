@@ -7,8 +7,10 @@
 
   <ul class="bank-list">
     <li *ngFor="let bank of banks | async">
-      {{bank.label}}:
-      <input nz-input nzBorderless placeholder="0" [(ngModel)]="bank.balance" (blur)="onBankChange(bank)" />
+        {{bank.label}}:
+      <nz-input-group [nzPrefix]="prefixTemplateInfo" class="w-4/5">
+          <input nz-input nzBorderless placeholder="0" [(ngModel)]="bank.balance" (blur)="onBankChange(bank)" class="mr-auto " />
+      </nz-input-group>
     </li>
   </ul>
 
@@ -41,4 +43,9 @@
 
 <ng-template #remainingTemp>
   <bdi>{{ (remaining | async) | number }} تومان</bdi>
+</ng-template>
+
+<ng-template #prefixTemplateInfo>
+  <span nz-icon nzType="loading"></span>
+  <!-- <span nz-icon nzType="check-circle"></span> -->
 </ng-template>
