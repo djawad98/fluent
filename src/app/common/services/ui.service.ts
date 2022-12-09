@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { combineLatest, map, Observable, of } from 'rxjs';
+import { State } from '../state.model';
 import { ApiService } from './api.service';
 
 
 export type Transaction = {
+  id: number,
   date: Date,
   description: string,
   amount: number,
@@ -22,36 +24,66 @@ export type Bank = {
 })
 export class UiService {
 
-  transactions: Observable<Transaction[]> = this.apiService.getTransactions();
-  banks: Observable<Bank[]> = this.apiService.getBanks();
-  remaining!: Observable<number>;
+  transactions$ = new State<Transaction[]>();
+  banks$ = new State<Bank[]>();
+  remaining$ = new State<number>();
 
+  get transactions(){
+    return this.transactions$.get()
+  }
+
+  get banks(){
+    return this.banks$.get()
+  }
+
+  get remaining(){
+    return this.remaining$.get()
+  }
 
   constructor(private apiService: ApiService) {
-    this.calculateRemaining(this.transactions,this.banks);
+    this.transactions$.set(this.apiService.getTransactions())
+    this.banks$.set(this.apiService.getBanks())
+
+    this.calculateRemaining()
+  }
+
+  calculateRemaining(){
+    this.remaining$.set(combineLatest([this.transactions, this.banks])
+    .pipe(map(([transactions, banks]) => {
+      const sumNotPaidTransactions = transactions.filter(t => !t.isPaid).map(t => t.amount).reduce((res, curr) => res + curr, 0);
+      const sumBankBalance = banks.map(t => t.balance).reduce((res, curr) => res + curr, 0);
+      return sumBankBalance - sumNotPaidTransactions;
+    })))
+
   }
 
   onBankChange(bank: Bank){
-    const changedBanks = this.banks.pipe(map(banks => {
+    
+    this.banks$.set(this.banks.pipe(map(banks => {
       return banks.map(b => {
-        if(b.id = bank.id){
-          b.balance = bank.balance
+        if(b.id === bank.id){
+          b.balance = +bank.balance;
         }
         return b;
-      })
-    }))
+      });
 
-    this.calculateRemaining(this.transactions,changedBanks)
+    })))
+
+    this.calculateRemaining()
   }
 
-  calculateRemaining(transactions: Observable<Transaction[]>, banks: Observable<Bank[]>) {
-    this.remaining = combineLatest([transactions, banks])
-      .pipe(map(([transactions, banks]) => {
-        const sumNotPaidTransactions = transactions.filter(t => !t.isPaid).map(t => t.amount).reduce((res, curr) => res + curr, 0);
-        const sumBankBalance = banks.map(t => t.balance).reduce((res, curr) => res + curr, 0);
-        return sumBankBalance - sumNotPaidTransactions;
-      }))
-  }
+  onPaidChange(transaction: Transaction){
+    
+    this.transactions$.set(this.transactions.pipe(map(transactions => {
+      return transactions.map(t => {
+        if(t.id === transaction.id){
+          t.isPaid = transaction.isPaid;
+        }
+        return t;
+      });
+    })))
 
+    this.calculateRemaining()
+  }
 
 }

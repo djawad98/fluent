@@ -8,12 +8,12 @@
   <ul class="bank-list">
     <li *ngFor="let bank of banks | async">
       {{bank.label}}:
-      <input [inputMask]="currencyInputMask" nz-input nzBorderless  placeholder="0" [(ngModel)]="bank.balance" (ngModelChange)="onBankChange(bank)" />
+      <input nz-input nzBorderless placeholder="0" [(ngModel)]="bank.balance" (blur)="onBankChange(bank)" />
     </li>
   </ul>
 
   <div class="flex flex-col gap-4 mt-6">
-    <article *ngFor="let item of transactions | async" class="flex flex-col gap-2 p-4 relative rounded-md bg-white shadow">
+    <article *ngFor="let item of transactions | async" [ngClass]="{'opacity-50': item.isPaid}" class="flex flex-col gap-2 p-4 relative rounded-md bg-white shadow">
       <div>
         <p class="card-value">{{ item.date | localDate }}</p>
       </div>
@@ -29,7 +29,7 @@
 
       
       <div class="absolute top-4 left-4 bg-white">
-        <label nz-checkbox [(ngModel)]="item.isPaid" class="select-none">پرداخت شده</label>
+        <label nz-checkbox [(ngModel)]="item.isPaid" (ngModelChange)="onPaidChange(item)" class="select-none">پرداخت شده</label>
       </div>
     </article>
 
@@ -40,5 +40,5 @@
 </div>
 
 <ng-template #remainingTemp>
-  {{ (remaining | async) | number }} تومان
+  <bdi>{{ (remaining | async) | number }} تومان</bdi>
 </ng-template>

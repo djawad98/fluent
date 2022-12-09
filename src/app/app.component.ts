@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { createMask } from '@ngneat/input-mask';
 import { of } from 'rxjs';
 import { ApiService } from './common/services/api.service';
-import { Bank, UiService } from './common/services/ui.service';
+import { Bank, Transaction, UiService } from './common/services/ui.service';
 
 @Component({
   selector: 'app-root',
@@ -14,14 +14,11 @@ export class AppComponent implements OnInit {
 
   constructor(private uiService: UiService){}
 
-  ayande = 10000;
-  melli = 25000;
-
   currencyInputMask = createMask({
-    rightAlign: false,
+    // rightAlign: false,
     alias: 'numeric',
     groupSeparator: ',',
-    // digits: 0,
+    // digits: 2,
     // digitsOptional: false,
     // prefix: '$ ',
     placeholder: '0',
@@ -36,6 +33,10 @@ export class AppComponent implements OnInit {
 
   onBankChange(bank: Bank){
     this.uiService.onBankChange(bank)
+  }
+
+  onPaidChange(transaction: Transaction){
+    this.uiService.onPaidChange(transaction)
   }
 
 }
