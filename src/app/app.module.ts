@@ -10,7 +10,6 @@ import {DecimalPipe} from '@angular/common'
 import {DatePipe} from '@angular/common';
 import { LocalDatePipe } from './common/pipes/local-date.pipe'
 import { NzInputModule } from 'ng-zorro-antd/input';
-import { InputMaskModule } from '@ngneat/input-mask';
 import { HttpClientModule } from '@angular/common/http';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 
@@ -20,7 +19,6 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
     LocalDatePipe
   ],
   imports: [
-    InputMaskModule.forRoot({ inputSelector: 'input', isAsync: true }),
     DecimalPipe,
     DatePipe,
     BrowserModule,
