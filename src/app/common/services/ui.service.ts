@@ -19,6 +19,13 @@ export type Bank = {
   balance: number,
 }
 
+export interface FormValue {
+  date: Date,
+  description: string,
+  amount: number,
+  isPaid: boolean,
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -84,6 +91,15 @@ export class UiService {
     })))
 
     this.calculateRemaining()
+  }
+
+
+  addItem(data: FormValue){
+    this.apiService.addItem(data)
+  }
+
+  editItem(data: FormValue){
+    this.apiService.editItem(data)
   }
 
 }

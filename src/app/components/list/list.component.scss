@@ -1,0 +1,17 @@
+.card-label {
+    @apply text-gray-500 text-sm;
+}
+
+.card-value {
+    @apply text-lg;
+}
+
+.bank-list {
+    li {
+        @apply flex items-center justify-between;
+        input {
+            width: 80%;
+            @apply text-left;
+        }
+    }
+}

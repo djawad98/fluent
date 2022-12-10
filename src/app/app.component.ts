@@ -9,23 +9,7 @@ import { Bank, Transaction, UiService } from './common/services/ui.service';
   styleUrls: ['./app.component.scss'],
   providers: [UiService, ApiService]
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
 
-  constructor(private uiService: UiService){}
-
-
-  transactions = this.uiService.transactions;
-  banks = this.uiService.banks;
-  remaining = this.uiService.remaining;
-
-  ngOnInit(){}
-
-  onBankChange(bank: Bank){
-    this.uiService.onBankChange(bank)
-  }
-
-  onPaidChange(transaction: Transaction){
-    this.uiService.onPaidChange(transaction)
-  }
 
 }

@@ -1,0 +1,38 @@
+<div class="flex items-center justify-end py-4 border-b border-slate-500">
+    <button routerLink="">
+        بازگشت
+        <span nz-icon nzType="left"></span>
+    </button>
+</div>
+
+<form nz-form [formGroup]="myform" class="login-form" (ngSubmit)="submitForm()">
+    <h1 class="py-4 text-2xl font-bold">مورد جدیدی اضافه کنید</h1>
+    <nz-form-item>
+        <nz-form-control [nzSpan]="12" nzErrorTip="شرح را وارد کنید">
+            <textarea formControlName="description" nz-input rows="2" placeholder="شرح"></textarea>
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-control nzErrorTip="مبلغ را وارد کنید">
+            <nz-input-group>
+                <input type="text" class="!text-left" nz-input formControlName="amount" placeholder="مبلغ" />
+            </nz-input-group>
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-control [nzSm]="16" [nzXs]="24">
+            <nz-date-picker formControlName="date" style="width: 100%"></nz-date-picker>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <label nz-checkbox formControlName="isPaid">
+            <span>پرداخت شده؟</span>
+        </label>
+    </nz-form-item>
+
+    <nz-form-item>
+        <button nz-button class="w-full" [nzType]="'primary'">تایید</button>
+    </nz-form-item>
+
+</form>
