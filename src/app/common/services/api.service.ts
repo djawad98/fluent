@@ -37,7 +37,7 @@ export class ApiService {
   constructor() {}
 
   getTransactions(): Observable<ApiResponse<Transaction>> {
-    return from(supabase.from('items').select('*')).pipe(map((response: ApiResponse<TransactionDto>) => {
+    return from(supabase.from('items').select('*').order('created_at')).pipe(map((response: ApiResponse<TransactionDto>) => {
 
       return convertApiResponse<TransactionDto,Transaction>(response, toTransaction)
 
