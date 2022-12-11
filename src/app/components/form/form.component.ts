@@ -20,6 +20,8 @@ export class FormComponent {
 
   isEditMode = false;
 
+  isFormLoading = this.uiService.formLoading;
+
   constructor(private i18n: NzI18nService, private route: ActivatedRoute, private uiService: UiService) {
     this.i18n.setLocale(en_US)
 

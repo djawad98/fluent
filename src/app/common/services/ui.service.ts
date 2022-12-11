@@ -14,9 +14,16 @@ export class UiService {
   banks$ = new State<Bank[]>();
   remaining$ = new State<number>();
 
+  formLoading$ = new State<boolean>();
+
+  get formLoading(){
+    return this.formLoading$.get();
+  }
+
   
   constructor(private apiService: ApiService) {
     this.calculateRemaining()
+    this.formLoading$.set(of(false))
   }
 
   transactions = this.apiService.getTransactions().pipe(map(response => {
@@ -80,11 +87,17 @@ export class UiService {
 
 
   addItem(data: FormValue){
-    return this.apiService.addItem(data)
+    this.formLoading$.set(of(true))
+    return this.apiService.addItem(data).pipe(tap(response => {
+      this.formLoading$.set(of(false))
+    }))
   }
 
   editItem(data: FormValue){
-    this.apiService.editItem(data)
+    this.formLoading$.set(of(true))
+    this.apiService.editItem(data).pipe(tap(response => {
+      this.formLoading$.set(of(false))
+    }))
   }
 
 }
