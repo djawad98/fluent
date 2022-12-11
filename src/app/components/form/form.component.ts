@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { en_US, NzI18nService, fa_IR } from 'ng-zorro-antd/i18n';
+import { FormValue } from 'src/app/common/app.model';
 import { UiService } from 'src/app/common/services/ui.service';
 
 @Component({
@@ -22,7 +23,7 @@ export class FormComponent {
   constructor(private i18n: NzI18nService, private route: ActivatedRoute, private uiService: UiService) {
     this.i18n.setLocale(en_US)
 
-    this.route.data.subscribe(console.log)
+    // this.route.data.subscribe(console.log)
   }
 
   submitForm() {
@@ -50,21 +51,25 @@ export class FormComponent {
   }
 
   addItem() {
-    if (
-      this.descriptionControl?.value &&
-      this.amountControl?.value &&
-      this.dateControl?.value &&
-      this.isPaidControl?.value
-    ) {
+    // console.log(this.descriptionControl && this.descriptionControl.dirty,
+    //   this.amountControl && !this.amountControl?.dirty,
+    //   this.dateControl && !this.dateControl.dirty,
+    //   this.isPaidControl && !this.isPaidControl.dirty)
+    // if (
+    //   this.descriptionControl && !this.descriptionControl.dirty &&
+    //   this.amountControl && !this.amountControl?.dirty &&
+    //   this.dateControl && !this.dateControl.dirty &&
+    //   this.isPaidControl && !this.isPaidControl.dirty
+    // ) {
 
       const data = {
         description: this.descriptionControl?.value,
         amount: this.amountControl?.value,
         date: this.dateControl?.value,
         isPaid: this.isPaidControl?.value,
-      }
-      this.uiService.addItem(data)
-    }
+      } as FormValue;
+      this.uiService.addItem(data).subscribe()
+    // }
 
   }
 

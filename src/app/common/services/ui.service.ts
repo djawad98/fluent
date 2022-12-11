@@ -1,30 +1,9 @@
 import { Injectable } from '@angular/core';
-import { combineLatest, map, Observable, of } from 'rxjs';
+import { combineLatest, map, Observable, of, tap } from 'rxjs';
+import { Bank, FormValue, Transaction } from '../app.model';
 import { State } from '../state.model';
 import { ApiService } from './api.service';
 
-
-export type Transaction = {
-  id: number,
-  date: Date,
-  description: string,
-  amount: number,
-  isPaid: boolean,
-}
-
-
-export type Bank = {
-  id: number,
-  label: string,
-  balance: number,
-}
-
-export interface FormValue {
-  date: Date,
-  description: string,
-  amount: number,
-  isPaid: boolean,
-}
 
 @Injectable({
   providedIn: 'root'
@@ -35,32 +14,38 @@ export class UiService {
   banks$ = new State<Bank[]>();
   remaining$ = new State<number>();
 
-  get transactions(){
-    return this.transactions$.get()
+  
+  constructor(private apiService: ApiService) {
+    this.calculateRemaining()
   }
 
-  get banks(){
-    return this.banks$.get()
-  }
+  transactions = this.apiService.getTransactions().pipe(map(response => {
+    if(!response.error){
+      return response.data
+    }
+    throw undefined;
+  }))
+
+  banks = this.apiService.getBanks().pipe(map(response => {
+    if(!response.error){
+      return response.data
+    }
+      throw undefined;
+  }))
+
 
   get remaining(){
     return this.remaining$.get()
   }
 
-  constructor(private apiService: ApiService) {
-    this.transactions$.set(this.apiService.getTransactions())
-    this.banks$.set(this.apiService.getBanks())
-
-    this.calculateRemaining()
-  }
 
   calculateRemaining(){
-    this.remaining$.set(combineLatest([this.transactions, this.banks])
-    .pipe(map(([transactions, banks]) => {
-      const sumNotPaidTransactions = transactions.filter(t => !t.isPaid).map(t => t.amount).reduce((res, curr) => res + curr, 0);
-      const sumBankBalance = banks.map(t => t.balance).reduce((res, curr) => res + curr, 0);
-      return sumBankBalance - sumNotPaidTransactions;
-    })))
+    // this.remaining$.set(combineLatest([this.transactions, this.banks])
+    // .pipe(map(([transactions, banks]) => {
+    //   const sumNotPaidTransactions = transactions.filter(t => !t.isPaid).map((t: Transaction) => t.amount).reduce((res: number, curr:number) => res + curr, 0);
+    //   const sumBankBalance = banks.map(t => t.balance).reduce((res: number, curr: number) => res + curr, 0);
+    //   return sumBankBalance - sumNotPaidTransactions;
+    // })))
 
   }
 
@@ -95,7 +80,7 @@ export class UiService {
 
 
   addItem(data: FormValue){
-    this.apiService.addItem(data)
+    return this.apiService.addItem(data)
   }
 
   editItem(data: FormValue){

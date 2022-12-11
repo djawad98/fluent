@@ -5,8 +5,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class LocalDatePipe implements PipeTransform {
 
-  transform(value: Date, ...args: unknown[]): unknown {
-    return value.toLocaleDateString('fa-ir', {
+  transform(value: string, ...args: unknown[]): unknown {
+    return new Date(value).toLocaleDateString('fa-ir', {
       timeZone: 'Asia/Tehran',
       year: "numeric",
       month: "long",
