@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { Bank, Transaction } from 'src/app/common/app.model';
 import { UiService } from 'src/app/common/services/ui.service';
 
@@ -9,7 +10,7 @@ import { UiService } from 'src/app/common/services/ui.service';
 })
 export class ListComponent {
 
-  constructor(private uiService: UiService){}
+  constructor(private uiService: UiService, private router: Router){}
 
 
   transactions = this.uiService.transactions;
@@ -17,6 +18,10 @@ export class ListComponent {
   remaining = this.uiService.remaining;
 
   ngOnInit(){
+  }
+
+  editItem(item: Transaction){
+    this.router.navigate(['edit'],{state: item})
   }
 
   onBankChange(bank: Bank){

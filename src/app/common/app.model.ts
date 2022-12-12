@@ -1,7 +1,7 @@
 import { PostgrestResponse } from "@supabase/supabase-js";
 
 export type TransactionDto = {
-    id: number,
+    id?: number,
     created_at: string,
     description: string,
     amount: number,
@@ -31,6 +31,7 @@ export type BankDto = {
 }
 
 export interface FormValue {
+    id?: number,
     date: Date,
     description: string,
     amount: number,
@@ -46,6 +47,7 @@ export type ApiResponseSuccess<T> = {
 
 export function toTransaction(transactions: TransactionDto[]) {
     return transactions.map(t => ({
+        id: t.id,
         amount: t.amount,
         date: t.created_at,
         description: t.description,

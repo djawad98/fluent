@@ -6,7 +6,8 @@
 </div>
 
 <form nz-form [formGroup]="myform" class="login-form" (ngSubmit)="submitForm()">
-    <h1 class="py-4 text-2xl font-bold">مورد جدیدی اضافه کنید</h1>
+    <h1 *ngIf="!isEditMode" class="py-4 text-2xl font-bold">مورد جدیدی اضافه کنید</h1>
+    <h1 *ngIf="isEditMode" class="py-4 text-2xl font-bold">ویرایش کنید</h1>
     <nz-form-item>
         <nz-form-control [nzSpan]="12" nzErrorTip="شرح را وارد کنید">
             <textarea formControlName="description" nz-input rows="2" placeholder="شرح"></textarea>

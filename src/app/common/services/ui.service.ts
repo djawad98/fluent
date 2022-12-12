@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { combineLatest, map, Observable, of, tap } from 'rxjs';
+import { Router } from '@angular/router';
+import { combineLatest, finalize, map, Observable, of, tap } from 'rxjs';
 import { Bank, FormValue, Transaction } from '../app.model';
 import { State } from '../state.model';
 import { ApiService } from './api.service';
@@ -21,7 +22,7 @@ export class UiService {
   }
 
   
-  constructor(private apiService: ApiService) {
+  constructor(private apiService: ApiService, private router: Router) {
     this.calculateRemaining()
     this.formLoading$.set(of(false))
   }
@@ -88,14 +89,22 @@ export class UiService {
 
   addItem(data: FormValue){
     this.formLoading$.set(of(true))
-    return this.apiService.addItem(data).pipe(tap(response => {
+    return this.apiService.addItem(data).pipe(
+      tap(() => {
+        this.router.navigate(['/'])
+      }),
+      finalize(() => {
       this.formLoading$.set(of(false))
     }))
   }
 
   editItem(data: FormValue){
     this.formLoading$.set(of(true))
-    this.apiService.editItem(data).pipe(tap(response => {
+    return this.apiService.editItem(data).pipe(
+      tap(() => {
+        this.router.navigate(['/'])
+      }),
+      finalize(() => {
       this.formLoading$.set(of(false))
     }))
   }

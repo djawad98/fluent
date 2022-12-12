@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { en_US, NzI18nService, fa_IR } from 'ng-zorro-antd/i18n';
-import { FormValue } from 'src/app/common/app.model';
+import { FormValue, Transaction } from 'src/app/common/app.model';
 import { UiService } from 'src/app/common/services/ui.service';
 
 @Component({
@@ -19,13 +19,21 @@ export class FormComponent {
   })
 
   isEditMode = false;
+  editableItemId:number = -1;
 
   isFormLoading = this.uiService.formLoading;
 
   constructor(private i18n: NzI18nService, private route: ActivatedRoute, private uiService: UiService) {
     this.i18n.setLocale(en_US)
-
-    // this.route.data.subscribe(console.log)
+    if (Object.keys(history.state).length > 1) {
+      this.isEditMode = true;
+      const editableItem = history.state as Transaction;
+      this.editableItemId = editableItem.id;
+      this.descriptionControl?.patchValue(editableItem.description)
+      this.amountControl?.patchValue(editableItem.amount)
+      this.isPaidControl?.patchValue(editableItem.isPaid)
+      this.dateControl?.patchValue(new Date(editableItem.date))
+    }
   }
 
   submitForm() {
@@ -52,17 +60,13 @@ export class FormComponent {
     return this.myform.get('isPaid')
   }
 
+  isFormValid() {
+    return true;
+  }
+
   addItem() {
-    // console.log(this.descriptionControl && this.descriptionControl.dirty,
-    //   this.amountControl && !this.amountControl?.dirty,
-    //   this.dateControl && !this.dateControl.dirty,
-    //   this.isPaidControl && !this.isPaidControl.dirty)
-    // if (
-    //   this.descriptionControl && !this.descriptionControl.dirty &&
-    //   this.amountControl && !this.amountControl?.dirty &&
-    //   this.dateControl && !this.dateControl.dirty &&
-    //   this.isPaidControl && !this.isPaidControl.dirty
-    // ) {
+
+    if (this.isFormValid()) {
 
       const data = {
         description: this.descriptionControl?.value,
@@ -71,26 +75,23 @@ export class FormComponent {
         isPaid: this.isPaidControl?.value,
       } as FormValue;
       this.uiService.addItem(data).subscribe()
-    // }
+    }
 
   }
 
   editItem() {
-    if (
-      this.descriptionControl?.value &&
-      this.amountControl?.value &&
-      this.dateControl?.value &&
-      this.isPaidControl?.value
-    ) {
+    if (this.isFormValid()) {
 
       const data = {
         description: this.descriptionControl?.value,
         amount: this.amountControl?.value,
         date: this.dateControl?.value,
         isPaid: this.isPaidControl?.value,
-      }
-      this.uiService.editItem(data)
+        id: this.editableItemId
+      } as FormValue;
+      this.uiService.editItem(data).subscribe()
     }
-
   }
+
+
 }

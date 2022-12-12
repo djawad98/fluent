@@ -38,10 +38,7 @@ export class ApiService {
 
   getTransactions(): Observable<ApiResponse<Transaction>> {
     return from(supabase.from('items').select('*').order('created_at')).pipe(map((response: ApiResponse<TransactionDto>) => {
-
-      return convertApiResponse<TransactionDto,Transaction>(response, toTransaction)
-
-      
+      return convertApiResponse<TransactionDto,Transaction>(response, toTransaction)      
     }))
     // return this.mockedTransactions;
   }
@@ -68,37 +65,22 @@ export class ApiService {
 
 
   addItem(data: FormValue) {
-    console.log('asdfasdf')
     return from(supabase
       .from('items')
-      .insert([
-        { description: data.description, isPaid: data.isPaid, amount: data.amount },
+      .insert<TransactionDto[]>([
+        { description: data.description, isPaid: data.isPaid, amount: data.amount, created_at: data.date.toString() },
       ])).pipe(map((response: PostgrestResponse<any>) => {
         return response.data;
       }))
-
-    return this.mockedTransactions.pipe(map(transactions => {
-      transactions.push({
-        id: Math.floor(Math.random() * 100),
-        created_at: data.date.toString(),
-        description: data.description,
-        amount: data.amount,
-        isPaid: data.isPaid,
-      })
-      return transactions
-    }))
   }
 
   editItem(data: FormValue) {
-    return this.mockedTransactions.pipe(map(transactions => {
-      transactions.push({
-        id: Math.floor(Math.random() * 100),
-        created_at: data.date.toString(),
-        description: data.description,
-        amount: data.amount,
-        isPaid: data.isPaid,
-      })
-      return transactions
-    }))
+    return from(supabase
+      .from('items')
+      .update<TransactionDto>({ description: data.description, isPaid: data.isPaid, amount: data.amount, created_at: data.date.toString() })
+      .eq('id', data.id)
+      ).pipe(map((response: PostgrestResponse<any>) => {
+        return response.data;
+      }))
   }
 }
