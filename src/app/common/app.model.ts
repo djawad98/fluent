@@ -8,6 +8,15 @@ export type TransactionDto = {
     isPaid: boolean,
 }
 
+export type CreateTransactionDto = {
+    created_at: Date,
+    description: string,
+    amount: number,
+    isPaid: boolean,
+}
+
+export type EditTransactionDto = CreateTransactionDto
+
 export type Transaction = {
     id: number,
     date: string,

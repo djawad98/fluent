@@ -4,7 +4,7 @@ import { from, map, Observable, of, tap } from 'rxjs';
 
 
 import { createClient, PostgrestResponse } from '@supabase/supabase-js'
-import { ApiResponse, Bank, BankDto, convertApiResponse, FormValue, toBank, toTransaction, Transaction, TransactionDto } from '../app.model';
+import { ApiResponse, Bank, BankDto, convertApiResponse, CreateTransactionDto, EditTransactionDto, FormValue, toBank, toTransaction, Transaction, TransactionDto } from '../app.model';
 import { convertToParamMap } from '@angular/router';
 
 const supabaseUrl = 'https://njxjryiegvgdijjllzvl.supabase.co'
@@ -67,20 +67,21 @@ export class ApiService {
   addItem(data: FormValue) {
     return from(supabase
       .from('items')
-      .insert<TransactionDto[]>([
-        { description: data.description, isPaid: data.isPaid, amount: data.amount, created_at: data.date.toString() },
+      .insert<CreateTransactionDto[]>([
+        { description: data.description, isPaid: data.isPaid, amount: data.amount, created_at: data.date },
       ])).pipe(map((response: PostgrestResponse<any>) => {
-        return response.data;
+        return response;
       }))
   }
 
   editItem(data: FormValue) {
+    console.log(data.date.toString())
     return from(supabase
       .from('items')
-      .update<TransactionDto>({ description: data.description, isPaid: data.isPaid, amount: data.amount, created_at: data.date.toString() })
+      .update<EditTransactionDto>({ description: data.description, isPaid: data.isPaid, amount: data.amount, created_at: data.date })
       .eq('id', data.id)
       ).pipe(map((response: PostgrestResponse<any>) => {
-        return response.data;
+        return response;
       }))
   }
 }

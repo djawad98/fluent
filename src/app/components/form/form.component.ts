@@ -33,6 +33,8 @@ export class FormComponent {
       this.amountControl?.patchValue(editableItem.amount)
       this.isPaidControl?.patchValue(editableItem.isPaid)
       this.dateControl?.patchValue(new Date(editableItem.date))
+    } else {
+      this.isEditMode = false;
     }
   }
 
