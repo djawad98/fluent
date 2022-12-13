@@ -9,10 +9,10 @@ export type TransactionDto = {
 }
 
 export type CreateTransactionDto = {
-    created_at: Date,
-    description: string,
-    amount: number,
-    isPaid: boolean,
+    created_at?: Date,
+    description?: string,
+    amount?: number,
+    isPaid?: boolean,
 }
 
 export type EditTransactionDto = CreateTransactionDto
@@ -23,6 +23,7 @@ export type Transaction = {
     description: string,
     amount: number,
     isPaid: boolean,
+    isPaidLoading: boolean
 }
 
 
@@ -60,7 +61,8 @@ export function toTransaction(transactions: TransactionDto[]) {
         amount: t.amount,
         date: t.created_at,
         description: t.description,
-        isPaid: t.isPaid
+        isPaid: t.isPaid,
+        isPaidLoading: false,
     } as Transaction))
 }
 

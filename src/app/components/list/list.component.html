@@ -29,8 +29,10 @@
 
 
       <div class="absolute top-4 left-4 bg-white">
-        <label nz-checkbox [(ngModel)]="item.isPaid" (ngModelChange)="onPaidChange(item)" class="select-none">پرداخت
-          شده</label>
+        <!-- <label nz-checkbox [(ngModel)]="item.isPaid"  class="select-none">پرداخت
+          شده</label> -->
+          <nz-switch [ngModel]="item.isPaid" [nzControl]="true" (click)="onPaidChange(item)" [nzLoading]="item.isPaidLoading" nzSize="small"></nz-switch>
+
       </div>
       <div class="absolute bottom-4 left-4 bg-white">
         <button (click)="editItem(item)" class="text-white bg-slate-400 rounded px-2 py-1 text-xs">ویرایش</button>
@@ -44,11 +46,13 @@
 </button>
 
 <ng-template #remainingTemp>
-  <bdi>{{ (remaining | async) | number }} تومان</bdi>
+  <ng-container *ngIf="(remaining | async) as remainder">
+    <bdi><span [class.text-red-500]="remainder < 0">{{ remainder | number }}</span> تومان</bdi>
+  </ng-container>
 </ng-template>
 
 <ng-template #prefixTemplateInfo>
-  <span nz-icon nzType="loading"></span>
+  <!-- <span nz-icon nzType="loading"></span> -->
   <!-- <span nz-icon nzType="check-circle"></span> -->
 </ng-template>
 

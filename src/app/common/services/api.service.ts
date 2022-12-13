@@ -75,7 +75,6 @@ export class ApiService {
   }
 
   editItem(data: FormValue) {
-    console.log(data.date.toString())
     return from(supabase
       .from('items')
       .update<EditTransactionDto>({ description: data.description, isPaid: data.isPaid, amount: data.amount, created_at: data.date })
@@ -83,5 +82,16 @@ export class ApiService {
       ).pipe(map((response: PostgrestResponse<any>) => {
         return response;
       }))
+  }
+
+  onPaidChange(transaction: Transaction){
+    return from(supabase
+      .from('items')
+      .update<EditTransactionDto>({isPaid: !transaction.isPaid})
+      .eq('id', transaction.id))
+      .pipe(map((response: PostgrestResponse<any>) => {
+        return response;
+      }))
+      
   }
 }

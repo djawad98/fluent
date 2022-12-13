@@ -14,11 +14,13 @@ export class ListComponent {
   constructor(private uiService: UiService, private router: Router){}
 
 
-  transactions = this.uiService.getTransactions(history.state.shouldResetTransactions);
-  banks = this.uiService.getBanks();
+  transactions = this.uiService.transactions;
+  banks = this.uiService.banks;
   remaining = this.uiService.remaining;
 
   ngOnInit(){
+    this.uiService.getBanks()
+    this.uiService.getTransactions(history.state.shouldResetTransactions);
     this.uiService.calculateRemaining()
   }
 
@@ -31,6 +33,6 @@ export class ListComponent {
   }
 
   onPaidChange(transaction: Transaction){
-    this.uiService.onPaidChange(transaction)
+    this.uiService.onPaidChange(transaction).subscribe()
   }
 }

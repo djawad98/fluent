@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, combineLatest, finalize, map, Observable, of, tap } from 'rxjs';
+import { catchError, combineLatest, finalize, map, Observable, of, take, tap } from 'rxjs';
 import { Bank, FormValue, Transaction } from '../app.model';
 import { State } from '../state.model';
 import { StateService } from './state.service';
@@ -11,39 +11,50 @@ import { StateService } from './state.service';
 })
 export class UiService {
 
-  transactions$ = new State<Transaction[]>();
-  banks$ = new State<Bank[]>();
-  remaining$ = new State<number>();
+  private transactions$ = new State<Transaction[]>();
+  private banks$ = new State<Bank[]>();
+  private remaining$ = new State<number>();
 
-  formLoading$ = new State<boolean>();
+  private formLoading$ = new State<boolean>();
+  private isPaidChangeLoading$ = new State<boolean>();
 
   get formLoading() {
     return this.formLoading$.get();
   }
 
-
-  constructor(private stateService: StateService, private router: Router) {
-    this.formLoading$.set(of(false))
+  get isPaidChangeLoading() {
+    return this.isPaidChangeLoading$.get();
   }
 
+  get banks(){
+    return this.banks$.get();
+  }
+
+  get transactions(){
+    return this.transactions$.get();
+  }
+
+
+  constructor(private stateService: StateService, private router: Router) {}
+
   getTransactions(reset = false) {
-    return this.stateService.getTransactions(reset).pipe(map(response => {
+    this.transactions$.set(this.stateService.getTransactions(reset).pipe(map(response => {
       if (!response.error) {
         return response.data
       }
       throw undefined;
-    }))
+    })))
   }
 
   getBanks(reset = false) {
-    return this.stateService.getBanks(reset).pipe(
+    this.banks$.set(this.stateService.getBanks(reset).pipe(
       map(response => {
         if (!response.error) {
           return response.data
         }
         throw undefined;
       })
-    )
+    ))
   }
 
 
@@ -53,7 +64,7 @@ export class UiService {
 
 
   calculateRemaining() {
-    this.remaining$.set(combineLatest([this.getTransactions(), this.getBanks()])
+    this.remaining$.set(combineLatest([this.transactions$.get(), this.banks$.get()])
       .pipe(map(([transactions, banks]) => {
         const sumNotPaidTransactions = transactions.filter(t => !t.isPaid).map((t: Transaction) => t.amount).reduce((res: number, curr: number) => res + curr, 0);
         const sumBankBalance = banks.map(t => t.balance).reduce((res: number, curr: number) => res + curr, 0);
@@ -64,7 +75,7 @@ export class UiService {
 
   onBankChange(bank: Bank) {
 
-    this.banks$.set(this.getBanks().pipe(map(banks => {
+    this.banks$.set(this.banks$.get().pipe(map(banks => {
       return banks.map(b => {
         if (b.id === bank.id) {
           b.balance = +bank.balance;
@@ -79,16 +90,30 @@ export class UiService {
 
   onPaidChange(transaction: Transaction) {
 
-    this.transactions$.set(this.getTransactions().pipe(map(transactions => {
-      return transactions.map(t => {
-        if (t.id === transaction.id) {
-          t.isPaid = transaction.isPaid;
-        }
-        return t;
-      });
-    })))
+    transaction.isPaidLoading = true;
+    return this.stateService.onPaidChange(transaction).pipe(
+      map(response => {
 
-    this.calculateRemaining()
+        if (response.status >= 200 && response.status < 300) {
+          this.transactions$.set(this.transactions$.get().pipe(take(1),map(transactions => {
+            return transactions.map(t => {
+              if (t.id === transaction.id) {
+                t.isPaid = !t.isPaid;
+              }
+              return t;
+            });
+          })))
+
+          this.calculateRemaining()
+
+        } else {
+          alert(response.error?.message)
+        }
+      }),
+      finalize(() => {
+        transaction.isPaidLoading = false;
+      })
+    )
   }
 
 
@@ -96,7 +121,7 @@ export class UiService {
     this.formLoading$.set(of(true))
     return this.stateService.addItem(data).pipe(
       tap((response) => {
-        if(response.status >= 200 && response.status < 300){
+        if (response.status >= 200 && response.status < 300) {
           this.router.navigate(['/'], { state: { shouldResetTransactions: true } })
         } else {
           alert(response.error?.message)
@@ -105,15 +130,15 @@ export class UiService {
       finalize(() => {
         this.formLoading$.set(of(false))
       }),
-      
-      )
+
+    )
   }
 
   editItem(data: FormValue) {
     this.formLoading$.set(of(true))
     return this.stateService.editItem(data).pipe(
       tap((response) => {
-        if(response.status >= 200 && response.status < 300){
+        if (response.status >= 200 && response.status < 300) {
           this.router.navigate(['/'], { state: { shouldResetTransactions: true } })
         } else {
           alert(response.error?.message)

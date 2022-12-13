@@ -5,6 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { FormsModule,ReactiveFormsModule  } from '@angular/forms';
 import {DecimalPipe} from '@angular/common'
 import {DatePipe} from '@angular/common';
@@ -38,6 +39,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations'
     ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
+    NzSwitchModule,
     NzIconModule,
     NzFormModule,
     NzDatePickerModule,

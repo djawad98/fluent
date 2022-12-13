@@ -29,4 +29,9 @@ export class StateService {
   editItem(data: FormValue){
     return this.apiService.editItem(data)
   }
+
+
+  onPaidChange(transaction: Transaction){
+    return this.apiService.onPaidChange(transaction)
+  }
 }
