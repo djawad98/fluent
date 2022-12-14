@@ -24,6 +24,7 @@ export type Transaction = {
     amount: number,
     isPaid: boolean,
     isPaidLoading: boolean
+    deleteLoading: boolean;
 }
 
 
@@ -31,6 +32,7 @@ export type Bank = {
     id: number,
     label: string,
     balance: number,
+    isUpdating: boolean;
 }
 
 
@@ -63,11 +65,15 @@ export function toTransaction(transactions: TransactionDto[]) {
         description: t.description,
         isPaid: t.isPaid,
         isPaidLoading: false,
+        deleteLoading: false,
     } as Transaction))
 }
 
 export function toBank(banks: BankDto[]) {
-    return banks;
+    return banks.map(bank => ({
+        isUpdating: false,
+        ...bank
+    }))
 }
 
 

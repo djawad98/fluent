@@ -94,4 +94,28 @@ export class ApiService {
       }))
       
   }
+
+
+  deleteItem(item: Transaction){
+    return from(supabase
+      .from('items')
+      .delete()
+      .eq('id', item.id))
+      .pipe(map((response: PostgrestResponse<any>) => {
+        return response;
+      }))
+  }
+
+
+  onBankChange(bank: Bank){
+    return from(supabase
+      .from('banks')
+      .update({balance: +bank.balance})
+      .eq('id', bank.id))
+      .pipe(map((response: PostgrestResponse<any>) => {
+        return response;
+      }))
+  }
+  
+
 }

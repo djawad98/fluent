@@ -29,10 +29,14 @@ export class ListComponent {
   }
 
   onBankChange(bank: Bank){
-    this.uiService.onBankChange(bank)
+    this.uiService.onBankChange(bank).subscribe()
   }
 
   onPaidChange(transaction: Transaction){
     this.uiService.onPaidChange(transaction).subscribe()
+  }
+
+  deleteItem(item :Transaction){
+    this.uiService.deleteItem(item).subscribe()
   }
 }

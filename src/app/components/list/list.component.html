@@ -3,7 +3,7 @@
 <ul class="bank-list" *ngIf="banks | async as banks; else loading">
   <li *ngFor="let bank of banks">
     {{bank.label}}:
-    <nz-input-group [nzPrefix]="prefixTemplateInfo" class="w-4/5">
+    <nz-input-group [nzPrefixIcon]="bank.isUpdating ? 'loading' : 'check-circle'" class="w-4/5">
       <input nz-input nzBorderless placeholder="0" [(ngModel)]="bank.balance" (blur)="onBankChange(bank)"
         class="mr-auto " />
     </nz-input-group>
@@ -31,11 +31,14 @@
       <div class="absolute top-4 left-4 bg-white">
         <!-- <label nz-checkbox [(ngModel)]="item.isPaid"  class="select-none">پرداخت
           شده</label> -->
-          <nz-switch [ngModel]="item.isPaid" [nzControl]="true" (click)="onPaidChange(item)" [nzLoading]="item.isPaidLoading" nzSize="small"></nz-switch>
+          <nz-switch [ngModel]="item.isPaid" [nzControl]="true" (click)="onPaidChange(item)" [nzLoading]="item.isPaidLoading" [disabled]="item.isPaidLoading" nzSize="small"></nz-switch>
 
       </div>
       <div class="absolute bottom-4 left-4 bg-white">
         <button (click)="editItem(item)" class="text-white bg-slate-400 rounded px-2 py-1 text-xs">ویرایش</button>
+        <button (click)="deleteItem(item)" [class]="'text-white bg-red-500 rounded mr-2 px-2 py-1 text-xs '+ (item.deleteLoading ? 'opacity-50 pointer-events-none' : '')" [disabled]="item.deleteLoading">
+          <span nz-icon [nzType]="item.deleteLoading ? 'loading' : 'delete'"></span>
+        </button>
       </div>
     </article>
   </ng-container>
@@ -52,8 +55,7 @@
 </ng-template>
 
 <ng-template #prefixTemplateInfo>
-  <!-- <span nz-icon nzType="loading"></span> -->
-  <!-- <span nz-icon nzType="check-circle"></span> -->
+  <span nz-icon [nzType]="'loading'"></span>
 </ng-template>
 
 <ng-template #loading>

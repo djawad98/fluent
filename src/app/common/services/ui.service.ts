@@ -17,9 +17,14 @@ export class UiService {
 
   private formLoading$ = new State<boolean>();
   private isPaidChangeLoading$ = new State<boolean>();
+  private deleteLoading$ = new State<boolean>();
 
   get formLoading() {
     return this.formLoading$.get();
+  }
+
+  get deleteLoading() {
+    return this.deleteLoading$.get();
   }
 
   get isPaidChangeLoading() {
@@ -75,17 +80,33 @@ export class UiService {
 
   onBankChange(bank: Bank) {
 
-    this.banks$.set(this.banks$.get().pipe(map(banks => {
-      return banks.map(b => {
-        if (b.id === bank.id) {
-          b.balance = +bank.balance;
-        }
-        return b;
-      });
 
-    })))
-
+    bank.isUpdating = true;
+    this.banks$.set(this.banks.pipe(
+      map(banks => {
+        banks.map(b => {
+          if(b.id === bank.id){
+            b.balance = Number(bank.balance);
+          }
+          return b;
+        })
+        return banks;
+      })
+    ))
     this.calculateRemaining()
+    return this.stateService.onBankChange(bank).pipe(
+      map(response => {
+
+        if (response.status >= 200 && response.status < 300) {
+          
+        } else {
+          alert(response.error?.message)
+        }
+      }),
+      finalize(() => {
+        bank.isUpdating = false;
+      })
+    )
   }
 
   onPaidChange(transaction: Transaction) {
@@ -147,6 +168,28 @@ export class UiService {
       finalize(() => {
         this.formLoading$.set(of(false))
       }))
+  }
+
+
+  deleteItem(item: Transaction){
+    item.deleteLoading = true;
+    return this.stateService.deleteItem(item)
+      .pipe(
+        tap((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            this.transactions$.set(this.transactions.pipe(
+              map(transactions => {
+                return transactions.filter(t => t.id !== item.id)
+              })
+            ))
+          } else {
+            alert(response.error?.message)
+          }
+        }),
+        finalize(() => {
+          item.deleteLoading = false;
+        })
+      )
   }
 
 }

@@ -22,6 +22,10 @@ export class StateService {
     return this.banks$.getWithResetCondition(reset, this.apiService.getBanks())
   }
 
+  onBankChange(bank: Bank): Observable<ApiResponse<Bank>> {
+    return this.apiService.onBankChange(bank);
+  }
+
   addItem(data: FormValue) {
     return this.apiService.addItem(data);
   }
@@ -30,6 +34,9 @@ export class StateService {
     return this.apiService.editItem(data)
   }
 
+  deleteItem(item: Transaction){
+    return this.apiService.deleteItem(item);
+  }
 
   onPaidChange(transaction: Transaction){
     return this.apiService.onPaidChange(transaction)
