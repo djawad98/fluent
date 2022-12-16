@@ -3,8 +3,12 @@
 <ul class="bank-list" *ngIf="banks | async as banks; else loading">
   <li *ngFor="let bank of banks">
     {{bank.label}}:
-    <nz-input-group [nzPrefixIcon]="bank.isUpdating ? 'loading' : 'check-circle'" class="w-4/5">
-      <input nz-input nzBorderless placeholder="0" [(ngModel)]="bank.balance" (blur)="onBankChange(bank)"
+    <nz-input-group class="w-4/5 relative">
+      <div class="absolute top-1 right-8">
+        <span *ngIf="bank.isUpdating" nz-icon nzType="loading"></span>
+        <span *ngIf="!bank.isUpdating" class="anim-fade-once" nz-icon nzType="check-circle"></span>
+      </div>
+      <input appCleave nz-input placeholder="0" [(ngModel)]="bank.balance" (blur)="onBankChange(bank)"
         class="mr-auto " />
     </nz-input-group>
   </li>

@@ -37,6 +37,9 @@ export class FormComponent {
       this.isEditMode = false;
     }
   }
+  hello(ll: any){
+    console.log(ll)
+  }
 
   submitForm() {
     if (this.isEditMode) {
@@ -62,13 +65,9 @@ export class FormComponent {
     return this.myform.get('isPaid')
   }
 
-  isFormValid() {
-    return true;
-  }
-
   addItem() {
 
-    if (this.isFormValid()) {
+    if (this.myform.valid) {
 
       const data = {
         description: this.descriptionControl?.value,
@@ -77,12 +76,17 @@ export class FormComponent {
         isPaid: this.isPaidControl?.value,
       } as FormValue;
       this.uiService.addItem(data).subscribe()
+    } else {
+      this.dateControl?.markAsDirty()
+      this.amountControl?.markAsDirty()
+      this.isPaidControl?.markAsDirty()
+      this.descriptionControl?.markAsDirty()
     }
 
   }
 
   editItem() {
-    if (this.isFormValid()) {
+    if (this.myform.valid) {
 
       const data = {
         description: this.descriptionControl?.value,
@@ -92,6 +96,11 @@ export class FormComponent {
         id: this.editableItemId
       } as FormValue;
       this.uiService.editItem(data).subscribe()
+    } else {
+      this.dateControl?.markAsDirty()
+      this.amountControl?.markAsDirty()
+      this.isPaidControl?.markAsDirty()
+      this.descriptionControl?.markAsDirty()
     }
   }
 

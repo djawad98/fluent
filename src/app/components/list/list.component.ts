@@ -12,7 +12,7 @@ import { UiService } from 'src/app/common/services/ui.service';
 export class ListComponent {
 
   constructor(private uiService: UiService, private router: Router){}
-
+  
 
   transactions = this.uiService.transactions;
   banks = this.uiService.banks;

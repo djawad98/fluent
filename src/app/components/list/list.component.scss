@@ -15,3 +15,16 @@
         }
     }
 }
+
+.anim-fade-once {
+    animation: fade 1s 1;
+}
+
+@keyframes fade {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}

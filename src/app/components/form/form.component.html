@@ -10,13 +10,13 @@
     <h1 *ngIf="isEditMode" class="py-4 text-2xl font-bold">ویرایش کنید</h1>
     <nz-form-item>
         <nz-form-control [nzSpan]="12" nzErrorTip="شرح را وارد کنید">
-            <textarea formControlName="description" nz-input rows="2" placeholder="شرح"></textarea>
+            <textarea [class.!border-red-600]="descriptionControl?.errors && descriptionControl?.dirty" formControlName="description" nz-input rows="2" placeholder="شرح"></textarea>
         </nz-form-control>
     </nz-form-item>
     <nz-form-item>
         <nz-form-control nzErrorTip="مبلغ را وارد کنید">
             <nz-input-group>
-                <input type="text" class="!text-left" nz-input formControlName="amount" placeholder="مبلغ" />
+                <bdi><input [class.!border-red-600]="amountControl?.errors && amountControl?.dirty" type="text" dir="ltr" nz-input formControlName="amount" placeholder="مبلغ" /></bdi>
             </nz-input-group>
         </nz-form-control>
     </nz-form-item>
